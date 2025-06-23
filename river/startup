@@ -1,0 +1,3 @@
+#!/bin/sh
+dir=/run/user/1000; mkdir $dir; chown anon:anon $dir; chmod 700 $dir; export XDG_RUNTIME_DIR=$dir
+

@@ -1,0 +1,57 @@
+#!/bin/sh
+
+riverctl border-width 0
+riverctl keyboard-layout pl
+riverctl set-repeat 50 400
+
+riverctl map normal Super Q close
+riverctl map normal Super+Shift Q exit
+riverctl map normal Super F toggle-fullscreen
+riverctl map normal Super Space toggle-float
+riverctl map normal Super+Shift Return zoom
+
+riverctl map normal Super Return spawn alacritty
+riverctl map normal Super B spawn firefox
+riverctl map normal None Print spawn "slurp | grim -g - - | wl-copy"
+
+riverctl map normal Super J focus-view next
+riverctl map normal Super K focus-view previous
+riverctl map normal Super+Shift J swap next
+riverctl map normal Super+Shift K swap previous
+
+riverctl map-pointer normal Super BTN_LEFT move-view
+riverctl map-pointer normal Super BTN_RIGHT resize-view
+
+for mode in normal locked; do
+	riverctl map $mode None XF86AudioNext spawn "playerctl next"
+	riverctl map $mode None XF86AudioPlay spawn "playerctl play-pause"
+	riverctl map $mode None XF86AudioPrev spawn "playerctl previous"
+done
+
+for i in $(seq 9); do
+	tag=$((1 << ($i - 1)))
+	riverctl map normal Super $i set-focused-tags $tag
+	riverctl map normal Super+Shift $i set-view-tags $tag
+	riverctl map normal Super+Control $i toggle-focused-tags $tag
+	riverctl map normal Super+Shift+Control $i toggle-view-tags $tag
+done
+
+all_tags=$(((1 << 9) - 1))
+riverctl map normal Super 0 set-focused-tags $all_tags
+riverctl map normal Super+Shift 0 set-view-tags $all_tags
+
+scratch_tag=$((1 < 9))
+riverctl map normal Super Minus toggle-focused-tags $scratch_tag
+riverctl map normal Super+Shift Minus set-view-tags $scratch_tag
+
+rivertile &
+riverctl default-layout rivertile
+riverctl map normal Super H send-layout-cmd rivertile "main-ratio -0.05"
+riverctl map normal Super L send-layout-cmd rivertile "main-ratio +0.05"
+riverctl map normal Super+Shift H send-layout-cmd rivertile "main-count +1"
+riverctl map normal Super+Shift L send-layout-cmd rivertile "main-count -1"
+
+riverctl map normal Super+Shift+Control H send-layout-cmd rivertile "main-location left"
+riverctl map normal Super+Shift+Control J send-layout-cmd rivertile "main-location bottom"
+riverctl map normal Super+Shift+Control K send-layout-cmd rivertile "main-location top"
+riverctl map normal Super+Shift+Control L send-layout-cmd rivertile "main-location right"
