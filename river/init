@@ -47,6 +47,7 @@ all_tags=$(((1 << 9) - 1))
 riverctl map normal Super 0 set-focused-tags $all_tags
 riverctl map normal Super+Shift 0 set-view-tags $all_tags
 
+scratch_tag=$((1 << 9))
 riverctl map normal Super Minus toggle-focused-tags $scratch_tag
 riverctl map normal Super+Shift Minus set-view-tags $scratch_tag
 
