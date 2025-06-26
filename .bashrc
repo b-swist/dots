@@ -10,6 +10,8 @@ export XDG_STATE_HOME="$HOME"/.local/state
 export EDITOR=nvim
 export VISUAL="$EDITOR"
 
+export INPUTRC="$XDG_CONFIG_HOME"/readline/inputrc
+
 shopt -s autocd
 shopt -s cdspell
 
