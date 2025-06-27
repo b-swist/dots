@@ -11,6 +11,7 @@ export EDITOR=nvim
 export VISUAL="$EDITOR"
 
 export INPUTRC="$XDG_CONFIG_HOME"/readline/inputrc
+export MOZ_ENABLE_WAYLAND=1
 
 shopt -s autocd
 shopt -s cdspell
@@ -22,11 +23,11 @@ shopt -s globstar
 eval "$(fzf --bash)"
 complete -cf doas
 
-export PS1="\w \$ "
+export PS1="\w \$([[ \j -ne 0 ]] && echo [\j]\ )\$ "
 
 shopt -s histappend
 export HISTCONTROL=ignoreboth:erasedups
-export HISTIGNORE="ls:ll:pwd:exit:fg"
+export HISTIGNORE="ls:ll:pwd:exit:[bf]g"
 
 HISTDIR="$XDG_STATE_HOME"/bash
 export HISTFILE="$HISTDIR"/history
