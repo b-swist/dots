@@ -4,8 +4,10 @@ riverctl border-width 0
 riverctl keyboard-layout pl
 riverctl set-repeat 50 400
 
+riverctl spawn "dbus-update-activation-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=river"
 riverctl spawn rivertile
 riverctl spawn pipewire
+riverctl spawn fnott
 
 riverctl map normal Super Q close
 riverctl map normal Super+Shift Q exit
@@ -15,7 +17,9 @@ riverctl map normal Super+Shift Return zoom
 
 riverctl map normal Super Return spawn alacritty
 riverctl map normal Super B spawn firefox
-riverctl map normal None Print spawn "slurp | grim -g - - | wl-copy"
+riverctl map normal Super E spawn fuzzel
+riverctl map normal None Print spawn 'grim -g "$(slurp)" - | wl-copy && notify-send "Screenshot taken"'
+riverctl map normal Shift Print spawn 'grim - | wl-copy && notify-send "Screenshot taken"'
 
 riverctl map normal Super J focus-view next
 riverctl map normal Super K focus-view previous
@@ -62,3 +66,5 @@ riverctl map normal Super+Shift+Control H send-layout-cmd rivertile "main-locati
 riverctl map normal Super+Shift+Control J send-layout-cmd rivertile "main-location bottom"
 riverctl map normal Super+Shift+Control K send-layout-cmd rivertile "main-location top"
 riverctl map normal Super+Shift+Control L send-layout-cmd rivertile "main-location right"
+
+# vim:noet
