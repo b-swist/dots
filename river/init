@@ -5,6 +5,7 @@ riverctl keyboard-layout pl
 riverctl set-repeat 50 400
 
 riverctl spawn "dbus-update-activation-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=river"
+riverctl spawn "eww open-many wallpaper bar"
 riverctl spawn rivertile
 riverctl spawn pipewire
 riverctl spawn fnott
