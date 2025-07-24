@@ -1,4 +1,22 @@
+$include /etc/inputrc
+
+set show-all-if-unmodified On
+set bell-style none
+set blink-matching-paren On
+set enable-bracketed-paste On
+set mark-symlinked-directories On
+set echo-control-characters Off
+set completion-query-items 1000
+
+# set completion-display-width 0
 set completion-ignore-case On
+set completion-map-case On
+
+set colored-stats On
+set colored-completion-prefix On
+set menu-complete-display-prefix On
+set visible-stats On
+
 "\e[A": history-search-backward
 "\e[B": history-search-forward
 "\e\C-k": kill-whole-line
