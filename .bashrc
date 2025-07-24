@@ -9,9 +9,11 @@ export XDG_STATE_HOME="$HOME"/.local/state
 
 export EDITOR=nvim
 export VISUAL="$EDITOR"
+export PAGER=less
 
 export INPUTRC="$XDG_CONFIG_HOME"/readline/inputrc
 export MOZ_ENABLE_WAYLAND=1
+export LESS="-FiMRWX -x4"
 
 shopt -s autocd
 shopt -s cdspell
