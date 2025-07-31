@@ -10,6 +10,9 @@ export XDG_STATE_HOME="${HOME}/.local/state"
 export CARGO_HOME="${XDG_DATA_HOME}/cargo"
 export GOPATH="${XDG_DATA_HOME}/go"
 export GOMODCACHE="${XDG_CACHE_HOME}/go/mod"
+export PYTHON_HISTORY="${XDG_STATE_HOME}/python_history"
+export PYTHONPYCACHEPREFIX="${XDG_CACHE_HOME}/python"
+export PYTHONUSERBASE="${XDG_DATA_HOME}/python"
 
 [[ -z "$WAYLAND_DISPLAY" ]] && export MOZ_ENABLE_WAYLAND=1
 export INPUTRC="${XDG_CONFIG_HOME}/readline/inputrc"
