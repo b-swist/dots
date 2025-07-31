@@ -37,7 +37,7 @@ shopt -s globstar
 # eval "$(dircolors)"
 
 if [[ "$(type -P doas)" ]]; then
-    alias doedit="doas $EDITOR"
+    alias doedit="doas \$EDITOR"
     [[ -z "$(complete -p doas 2> /dev/null)" ]] && complete -cf doas
 fi
 
