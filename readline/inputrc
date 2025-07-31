@@ -6,17 +6,26 @@ set blink-matching-paren On
 set enable-bracketed-paste On
 set mark-symlinked-directories On
 set echo-control-characters Off
-set completion-query-items 1000
-
-# set completion-display-width 0
-set completion-ignore-case On
-set completion-map-case On
 
 set colored-stats On
 set colored-completion-prefix On
-set menu-complete-display-prefix On
 set visible-stats On
+
+set show-all-if-ambiguous on
+set show-all-if-unmodified on
+set completion-ignore-case On
+set completion-map-case On
+set skip-completed-text on
+set menu-complete-display-prefix On
+# set completion-display-width 0
+set completion-prefix-display-length 8
+set completion-query-items 1000
+
+"\t": menu-complete
+"\e[Z": menu-complete-backward
 
 "\e[A": history-search-backward
 "\e[B": history-search-forward
+
 "\e\C-k": kill-whole-line
+"\C-l": clear-display
