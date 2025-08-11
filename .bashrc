@@ -16,10 +16,10 @@ export PYTHON_HISTORY="${XDG_STATE_HOME}/python_history"
 export PYTHONPYCACHEPREFIX="${XDG_CACHE_HOME}/python"
 export PYTHONUSERBASE="${XDG_DATA_HOME}/python"
 
-ELECTRON_OZONE_PLATFORM_HINT=auto
+export ELECTRON_OZONE_PLATFORM_HINT=auto
 if [[ -n "$WAYLAND_DISPLAY" ]]; then
-    export MOZ_ENABLE_WAYLAND=1
-    export QT_QPA_PLATFORM="wayland;xcb"
+	export MOZ_ENABLE_WAYLAND=1
+	export QT_QPA_PLATFORM="wayland;xcb"
 fi
 
 export EDITOR=nvim
@@ -43,15 +43,15 @@ shopt -s globstar
 eval "$(dircolors)"
 
 if [[ "$(type -P doas)" ]]; then
-    alias doedit='doas $EDITOR'
-    [[ -z "$(complete -p doas 2>/dev/null)" ]] && complete -cf doas
+	alias doedit='doas $EDITOR'
+	[[ -z "$(complete -p doas 2>/dev/null)" ]] && complete -cf doas
 fi
 
 if [[ -f /usr/share/git/git-prompt.sh ]]; then
-    source /usr/share/git/git-prompt.sh
-    export PS1='$([[ \j -ne 0 ]] && echo "[\j] ")\w$(__git_ps1 " => %s") \$ '
+	source /usr/share/git/git-prompt.sh
+	export PS1='$([[ \j -ne 0 ]] && echo "[\j] ")\w$(__git_ps1 " => %s") \$ '
 else
-    export PS1='$([[ \j -ne 0 ]] && echo "[\j] ")\w \$ '
+	export PS1='$([[ \j -ne 0 ]] && echo "[\j] ")\w \$ '
 fi
 
 shopt -s histappend
@@ -62,9 +62,9 @@ export HISTFILESIZE="$HISTSIZE"
 export HISTTIMEFORMAT="%F %T  "
 
 set_histfile() {
-    local HISTDIR="${XDG_STATE_HOME}/bash"
-    mkdir -p "$HISTDIR"
-    export HISTFILE="${HISTDIR}/history"
+	local HISTDIR="${XDG_STATE_HOME}/bash"
+	mkdir -p "$HISTDIR" || echo "Failed to create history directory"
+	export HISTFILE="${HISTDIR}/history"
 }
 set_histfile
 unset -f set_histfile
@@ -75,6 +75,15 @@ alias mv="mv -iv"
 alias ..="cd .."
 alias ...="cd ../.."
 alias ls="ls -Fv --color=auto"
-function ll {
-    command ls -C "$@" -Ahlv --color=always --group-directories-first --time-style=long-iso | "$PAGER"
+
+[[ "$(type -t ll)" == "alias" ]] && unalias ll
+ll() {
+	command ls -C "$@" -Ahlv --color=always --group-directories-first --time-style=long-iso | "$PAGER"
+}
+
+get_distro() {
+	local distro
+	[[ ! -f /etc/os-release ]] && return 1
+	distro="$(grep '^ID=' /etc/os-release | cut -d'=' -f2 | tr -d \'\")"
+	echo "$distro"
 }
