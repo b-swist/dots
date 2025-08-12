@@ -22,6 +22,9 @@ if [[ -n "$WAYLAND_DISPLAY" ]]; then
 	export QT_QPA_PLATFORM="wayland;xcb"
 fi
 
+export XINITRC="${XDG_CONFIG_HOME}/X11/xinitrc"
+export XAUTHORITY="${XDG_RUNTIME_DIR}/Xauthority"
+
 export EDITOR=nvim
 export VISUAL="$EDITOR"
 export BROWSER=firefox
@@ -46,6 +49,8 @@ if [[ "$(type -P doas)" ]]; then
 	alias doedit='doas $EDITOR'
 	[[ -z "$(complete -p doas 2>/dev/null)" ]] && complete -cf doas
 fi
+
+[[ "$(type -P sudo)" ]] && [[ -z "$(complete -p sudo 2>/dev/null)" ]] && complete -cf sudo
 
 if [[ -f /usr/share/git/git-prompt.sh ]]; then
 	source /usr/share/git/git-prompt.sh
