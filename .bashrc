@@ -15,6 +15,8 @@ export GOMODCACHE="${XDG_CACHE_HOME}/go/mod"
 export PYTHON_HISTORY="${XDG_STATE_HOME}/python_history"
 export PYTHONPYCACHEPREFIX="${XDG_CACHE_HOME}/python"
 export PYTHONUSERBASE="${XDG_DATA_HOME}/python"
+export NPM_CONFIG_USERCONFIG="${XDG_CONFIG_HOME}/npm/npmrc"
+export _JAVA_OPTIONS=-Djava.util.prefs.userRoot="${XDG_CONFIG_HOME}/java"
 
 export ELECTRON_OZONE_PLATFORM_HINT=auto
 if [[ -n "$WAYLAND_DISPLAY" ]]; then
@@ -30,9 +32,19 @@ export VISUAL="$EDITOR"
 export BROWSER=firefox
 export PAGER=less
 
-export LESS="-FiMRWX -x4"
+export LESS="-FiMqRWX -x4 -z3"
 
 [[ $- != *i* ]] && return
+
+is_installed() { type -P "$@"; }
+has_completion() { complete -p "$@" 2>/dev/null; }
+
+get_distro() {
+	local distro
+	[[ ! -f /etc/os-release ]] && return 1
+	distro="$(grep '^ID=' /etc/os-release | cut -d'=' -f2 | tr -d \'\")"
+	echo "$distro"
+}
 
 set -o noclobber
 shopt -s autocd
@@ -42,15 +54,23 @@ shopt -s extglob
 shopt -s dotglob
 shopt -s globstar
 
-[[ "$(type -P fzf)" ]] && eval "$(fzf --bash)"
-eval "$(dircolors)"
+[[ "$(is_installed fzf)" ]] && eval "$(fzf --bash)"
+[[ "$(is_installed atuin)" ]] && eval "$(atuin init --disable-up-arrow bash)"
 
-if [[ "$(type -P doas)" ]]; then
+if [[ "$(is_installed doas)" ]]; then
 	alias doedit='doas $EDITOR'
-	[[ -z "$(complete -p doas 2>/dev/null)" ]] && complete -cf doas
+	[[ "$(has_completion doas)" ]] || complete -cf doas
+
+	if [[ "$(get_distro)" == void ]]; then
+		for cmd in poweroff reboot zzz ZZZ; do
+			# shellcheck disable=SC2139
+			alias "$cmd"="doas /usr/bin/${cmd}"
+		done
+		unset cmd
+	fi
 fi
 
-[[ "$(type -P sudo)" ]] && [[ -z "$(complete -p sudo 2>/dev/null)" ]] && complete -cf sudo
+[[ "$(is_installed sudo)" ]] && [[ ! "$(has_completion sudo)" ]] && complete -cf sudo
 
 if [[ -f /usr/share/git/git-prompt.sh ]]; then
 	source /usr/share/git/git-prompt.sh
@@ -68,7 +88,9 @@ export HISTTIMEFORMAT="%F %T  "
 
 set_histfile() {
 	local HISTDIR="${XDG_STATE_HOME}/bash"
-	mkdir -p "$HISTDIR" || echo "Failed to create history directory"
+	if [[ ! -d "$HISTDIR" ]]; then
+		mkdir -p "$HISTDIR" || echo "Failed to create history directory"
+	fi
 	export HISTFILE="${HISTDIR}/history"
 }
 set_histfile
@@ -83,12 +105,16 @@ alias ls="ls -Fv --color=auto"
 
 [[ "$(type -t ll)" == "alias" ]] && unalias ll
 ll() {
-	command ls -C "$@" -Ahlv --color=always --group-directories-first --time-style=long-iso | "$PAGER"
+	command ls -C "$@" -Ahlv --color=always --group-directories-first --time-style=long-iso | $PAGER
 }
 
-get_distro() {
-	local distro
-	[[ ! -f /etc/os-release ]] && return 1
-	distro="$(grep '^ID=' /etc/os-release | cut -d'=' -f2 | tr -d \'\")"
-	echo "$distro"
+rungui() {
+	if [[ $# -eq 0 ]]; then
+		echo "No parameter provided"
+		return 1
+	fi
+	(nohup "$@" &>/dev/null &) && exit
 }
+[[ "$(has_completion rungui)" ]] || complete -cf rungui
+
+unset -f has_completion is_installed
