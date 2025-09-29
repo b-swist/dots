@@ -18,6 +18,7 @@ riverctl background-color 0x000000
 
 riverctl spawn "dbus-update-activation-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=river"
 riverctl spawn pipewire
+riverctl spawn "wlr-randr --output HDMI-A-1 --mode 1920x1080@74.973Hz"
 
 riverctl map normal Super Q close
 riverctl map normal Super+Shift Q exit
