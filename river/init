@@ -41,9 +41,9 @@ riverctl map-pointer normal Super BTN_LEFT move-view
 riverctl map-pointer normal Super BTN_RIGHT resize-view
 
 for mode in normal locked; do
-	riverctl map -repeat "$mode" None XF86AudioMute spawn "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
 	riverctl map -repeat "$mode" None XF86AudioLowerVolume spawn "${RIVER_CONFIG_DIR}/scripts/volume.sh 5%-"
 	riverctl map -repeat "$mode" None XF86AudioRaiseVolume spawn "${RIVER_CONFIG_DIR}/scripts/volume.sh 5%+"
+	riverctl map "$mode" None XF86AudioMute spawn "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
 
 	riverctl map "$mode" None XF86AudioNext spawn "playerctl next"
 	riverctl map "$mode" None XF86AudioPlay spawn "playerctl play-pause"
