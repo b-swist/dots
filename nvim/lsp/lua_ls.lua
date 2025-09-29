@@ -9,9 +9,7 @@ return {
                 checkThirdParty = false,
                 library = { vim.env.VIMRUNTIME },
             },
-            completion = {
-                callSnippet = "Replace",
-            },
+            -- completion = { callSnippet = "Replace", },
         },
     },
 }

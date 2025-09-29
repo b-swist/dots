@@ -7,6 +7,9 @@ return {
     event = "InsertEnter",
     version = "1.*",
     opts = {
+        enabled = function()
+            return vim.bo.filetype ~= "markdown"
+        end,
         appearance = {
             nerd_font_variant = "normal",
         },
@@ -21,7 +24,10 @@ return {
 
         completion = {
             keyword = { range = "full" },
-            ghost_text = { enabled = true },
+            ghost_text = {
+                enabled = true,
+                show_without_selection = false,
+            },
             documentation = {
                 auto_show = true,
                 auto_show_delay_ms = 500,
@@ -47,6 +53,10 @@ return {
                             end,
                         },
                     },
+                    -- columns = {
+                    --     { "label", "label_description", gap = 1 },
+                    --     { "kind_icon", "kind" },
+                    -- },
                 },
             },
         },

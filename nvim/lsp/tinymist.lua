@@ -1,6 +1,7 @@
 return {
     settings = {
         exportPdf = "onSave",
-        outputPath = "$root/target/$dir/$name",
+        outputPath = "$root/target/$name",
+        formatterMode = "typstyle",
     },
 }

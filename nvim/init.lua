@@ -1,5 +1,6 @@
 require("config.opts")
 require("config.keymaps")
+require("config.lsp")
 require("config.lazy")
 
 vim.cmd.colorscheme("retrobox")

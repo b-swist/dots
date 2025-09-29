@@ -11,15 +11,15 @@ return {
         },
     },
     opts = {
-        stop_after_first = true,
         formatters_by_ft = {
             lua = { "stylua" },
             sh = { "shfmt" },
             bash = { "shfmt" },
+            typst = { lsp_format = "prefer" },
+            json = { "jq" },
         },
         format_on_save = function(bufnr)
-            local ignore_ft = {}
-
+            local ignore_ft = { "json" }
             if vim.tbl_contains(ignore_ft, vim.bo[bufnr].filetype) then
                 return
             end
@@ -27,6 +27,7 @@ return {
             if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
                 return
             end
+
             return { lsp_format = "fallback" }
         end,
     },
