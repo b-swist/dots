@@ -17,6 +17,7 @@ export PYTHONPYCACHEPREFIX="${XDG_CACHE_HOME}/python"
 export PYTHONUSERBASE="${XDG_DATA_HOME}/python"
 export NPM_CONFIG_USERCONFIG="${XDG_CONFIG_HOME}/npm/npmrc"
 export _JAVA_OPTIONS=-Djava.util.prefs.userRoot="${XDG_CONFIG_HOME}/java"
+export GRADLE_USER_HOME="${XDG_DATA_HOME}/gradle"
 
 export ELECTRON_OZONE_PLATFORM_HINT=auto
 if [[ -n "$WAYLAND_DISPLAY" ]]; then
