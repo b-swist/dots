@@ -1,6 +1,6 @@
 # ~/.bashrc
 
-export PATH="${PATH}:${HOME}/.local/bin"
+export PATH="${PATH}:/usr/local/bin:${HOME}/.local/bin"
 
 export XDG_CONFIG_HOME="${HOME}/.config"
 export XDG_CACHE_HOME="${HOME}/.cache"
@@ -8,6 +8,8 @@ export XDG_DATA_HOME="${HOME}/.local/share"
 export XDG_STATE_HOME="${HOME}/.local/state"
 
 export INPUTRC="${XDG_CONFIG_HOME}/readline/inputrc"
+export WGETRC="${XDG_CONFIG_HOME}/wgetrc"
+alias wget="wget --hsts-file="${XDG_CACHE_HOME}/wget-hsts""
 
 export CARGO_HOME="${XDG_DATA_HOME}/cargo"
 export GOPATH="${XDG_DATA_HOME}/go"
@@ -16,8 +18,9 @@ export PYTHON_HISTORY="${XDG_STATE_HOME}/python_history"
 export PYTHONPYCACHEPREFIX="${XDG_CACHE_HOME}/python"
 export PYTHONUSERBASE="${XDG_DATA_HOME}/python"
 export NPM_CONFIG_USERCONFIG="${XDG_CONFIG_HOME}/npm/npmrc"
-export _JAVA_OPTIONS=-Djava.util.prefs.userRoot="${XDG_CONFIG_HOME}/java"
+export _JAVA_OPTIONS="-Djava.util.prefs.userRoot="${XDG_CONFIG_HOME}/java""
 export GRADLE_USER_HOME="${XDG_DATA_HOME}/gradle"
+export NODE_REPL_HISTORY="${XDG_STATE_HOME}/node_repl_history"
 
 export ELECTRON_OZONE_PLATFORM_HINT=auto
 if [[ -n "$WAYLAND_DISPLAY" ]]; then
@@ -27,6 +30,8 @@ fi
 
 export XINITRC="${XDG_CONFIG_HOME}/X11/xinitrc"
 export XAUTHORITY="${XDG_RUNTIME_DIR}/Xauthority"
+
+export XCURSOR_PATH="${XCURSOR_PATH}:${XDG_DATA_HOME}/icons"
 
 export EDITOR=nvim
 export VISUAL="$EDITOR"
@@ -117,5 +122,6 @@ rungui() {
 	(nohup "$@" &>/dev/null &) && exit
 }
 [[ "$(has_completion rungui)" ]] || complete -cf rungui
+[[ -n "$WAYLAND_DISPLAY" ]] && alias spotify="rungui spotify --enable-features=UseOzonePlatform --ozone-platform=wayland"
 
 unset -f has_completion is_installed
