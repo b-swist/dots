@@ -1,9 +1,0 @@
-[window]
-padding = { x = 10, y = 10 }
-dynamic_padding = true
-
-[font]
-size = 12
-normal = { family = "MonaspiceNeNerdFontMono", style = "Regular" }
-italic = { family = "MonaspiceRnNerdFontMono", style = "Regular" }
-bold_italic = { family = "MonaspiceRnNerdFontMono", style = "Bold" }
