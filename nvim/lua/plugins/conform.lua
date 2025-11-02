@@ -13,10 +13,15 @@ return {
     opts = {
         formatters_by_ft = {
             lua = { "stylua" },
+            go = { "gofmt" },
             sh = { "shfmt" },
             bash = { "shfmt" },
             typst = { lsp_format = "prefer" },
             json = { "jq" },
+            javascript = { "prettier" },
+            css = { "prettier" },
+            scss = { "prettier" },
+            html = { "prettier" },
         },
         format_on_save = function(bufnr)
             local ignore_ft = { "json" }

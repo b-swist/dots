@@ -1,7 +1,5 @@
 return {
     "nvim-treesitter/nvim-treesitter",
-    event = "VeryLazy",
-    lazy = vim.fn.argc(-1) == 0,
     branch = "master",
     build = ":TSUpdate",
     opts = {
@@ -9,7 +7,7 @@ return {
             "lua",
             "bash",
             "typst",
-            "java",
+            "html",
         },
         auto_install = true,
         ignore_install = "latex",

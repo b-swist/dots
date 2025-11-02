@@ -5,7 +5,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
         if client:supports_method("textDocument/documentHighlight") then
             local hl_group = vim.api.nvim_create_augroup("cursor-hl", { clear = false })
 
-            vim.api.nvim_create_autocmd({"CursorHold", "CursorHoldI"}, {
+            vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
                 buffer = event.buf,
                 group = hl_group,
                 callback = vim.lsp.buf.document_highlight,

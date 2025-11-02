@@ -3,8 +3,6 @@ require("config.keymaps")
 require("config.lsp")
 require("config.lazy")
 
-vim.cmd.colorscheme("retrobox")
-
 vim.api.nvim_create_autocmd("TextYankPost", {
     group = vim.api.nvim_create_augroup("yank-highlight", { clear = true }),
     callback = function()

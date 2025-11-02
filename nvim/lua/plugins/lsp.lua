@@ -10,7 +10,9 @@ return {
             "lua_ls",
             "pylsp",
             "tinymist",
-            "jdtls",
+            "ts_ls",
+            "gopls",
+            "bashls",
         },
     },
 }

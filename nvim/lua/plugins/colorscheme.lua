@@ -1,12 +1,12 @@
 return {
-    {
-        "ellisonleao/gruvbox.nvim",
-        priority = 1000,
-        config = true,
-    },
-    {
-        "catppuccin/nvim",
-        name = "catppuccin",
-        priority = 1000,
-    },
+    "ellisonleao/gruvbox.nvim",
+    priority = 1000,
+    config = function()
+        require("gruvbox").setup({
+            palette_overrides = {
+                dark1 = "#282828",
+            },
+        })
+        vim.cmd.colorscheme("gruvbox")
+    end,
 }
