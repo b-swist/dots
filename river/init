@@ -8,7 +8,7 @@ launcher=fuzzel
 
 RIVER_CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/river"
 
-riverctl border-width 2
+riverctl border-width 0
 riverctl border-color-focused 0xffffff
 riverctl border-color-unfocused 0x000000
 
@@ -19,6 +19,7 @@ riverctl background-color 0x000000
 riverctl spawn "dbus-update-activation-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=river"
 riverctl spawn pipewire
 riverctl spawn "wlr-randr --output HDMI-A-1 --mode 1920x1080@74.973Hz"
+riverctl spawn "wbg \"${RIVER_CONFIG_DIR}/wallpaper.png\""
 
 riverctl map normal Super Q close
 riverctl map normal Super+Shift Q exit
