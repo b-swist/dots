@@ -1,0 +1,36 @@
+#!/bin/sh
+# based on: https://github.com/leahneukirchen/xtools
+
+which_sudo() {
+	if [ "$(id -u)" = "0" ]; then
+		return
+	elif command -v sudo >/dev/null && sudo -l | grep -q -e ' ALL$' -e xbps-remove; then
+		echo sudo
+	elif command -v doas >/dev/null && [ -f /etc/doas.conf ]; then
+		echo doas
+	else
+		echo su
+	fi
+}
+
+do_remove() {
+	if [ "$SUDO" = su ]; then
+		su root -c 'xbps-remove "$@"' -- sh "$@"
+	else
+		$SUDO xbps-remove "$@"
+	fi
+}
+
+PROG="${0##*/}"
+SUDO=$(which_sudo)
+
+if [ "$PROG" = xro ]; then
+	do_remove -Ro "$@"
+else
+	do_remove "$@"
+fi
+
+status=$?
+if [ $status -ne 0 ]; then
+	exit $status
+fi
