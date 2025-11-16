@@ -14,6 +14,7 @@ return {
         formatters_by_ft = {
             lua = { "stylua" },
             go = { "gofmt" },
+            python = { "black" },
             sh = { "shfmt" },
             bash = { "shfmt" },
             typst = { lsp_format = "prefer" },
