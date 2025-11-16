@@ -1,8 +1,13 @@
 # ~/.bashrc
 
 # common functions
-__is_installed() { command -v "$@" >/dev/null; }
-__has_completion() { complete -p "$@" >/dev/null 2>&1; }
+__is_installed() {
+	for cmd in "$@"; do
+		command -v -- "$cmd" >/dev/null || return 1
+	done
+	return 0
+}
+__has_completion() { complete -p -- "$@" >/dev/null 2>&1; }
 
 _get_distro() {
 	local distro
@@ -36,16 +41,14 @@ path=(
 	"/usr/local/bin"
 	"${XDG_BIN_HOME}"
 	"${XDG_BIN_HOME}/${distro}"
+	"${XDG_DATA_HOME}/npm/bin"
 )
 
 _appendpath() {
-	local d="${1%/}"
+	local dir="${1%/}"
 	case ":$PATH:" in
-	*:"$d":*) ;;
-	*)
-		[[ ! -d "$d" ]] && mkdir -p -- "$d"
-		PATH="${PATH:+$PATH:}$d"
-		;;
+	*:"$dir":*) ;;
+	*) PATH="${PATH:+$PATH:}$dir" ;;
 	esac
 }
 
@@ -69,6 +72,8 @@ export PYTHONUSERBASE="${XDG_DATA_HOME}/python"
 ## js
 export NPM_CONFIG_USERCONFIG="${XDG_CONFIG_HOME}/npm/npmrc"
 export NODE_REPL_HISTORY="${XDG_STATE_HOME}/node_repl_history"
+## elm
+export ELM_HOME="${XDG_CONFIG_HOME}/elm"
 ## java
 export _JAVA_OPTIONS="-Djava.util.prefs.userRoot="${XDG_CONFIG_HOME}/java""
 export GRADLE_USER_HOME="${XDG_DATA_HOME}/gradle"
@@ -132,6 +137,8 @@ else
 	export PS1='$([[ \j -ne 0 ]] && echo "[\j] ")\w \$ '
 fi
 
+__is_installed direnv && eval "$(direnv hook bash)"
+
 # history
 shopt -s histappend
 export HISTCONTROL=ignoreboth:erasedups
@@ -160,9 +167,11 @@ alias ls="ls -Fv --color=auto"
 # shellcheck disable=SC2139
 alias wget="wget --hsts-file=\"${XDG_CACHE_HOME}/wget-hsts\""
 
+__is_installed grim slurp magick && alias pick='grim -g "$(slurp -p)" -t ppm - | magick - -format "%[pixel:p{0,0}]" txt:-'
+
 [[ "$(type -t ll)" == "alias" ]] && unalias ll
 ll() {
-	command ls -C "$@" -Ahlv --color=always --group-directories-first --time-style=long-iso | $PAGER
+	command ls -Ahlv --color=always --group-directories-first --time-style=long-iso "$@" | $PAGER
 }
 
 rungui() {
@@ -170,7 +179,7 @@ rungui() {
 		echo "No parameter provided"
 		return 1
 	fi
-	(nohup "$@" &>/dev/null &) && exit
+	(nohup -- "$@" &>/dev/null &) && exit
 }
 __has_completion rungui || complete -cf rungui
 [[ -n "$WAYLAND_DISPLAY" ]] && alias spotify="rungui spotify --enable-features=UseOzonePlatform --ozone-platform=wayland"
