@@ -4,7 +4,7 @@
 layout=rivertile
 browser=firefox
 term=alacritty
-launcher=fuzzel
+launcher="$term -e runny"
 
 RIVER_CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/river"
 
@@ -16,10 +16,14 @@ riverctl keyboard-layout pl
 riverctl set-repeat 50 400
 riverctl background-color 0x000000
 
-riverctl spawn "dbus-update-activation-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=river"
-riverctl spawn pipewire
-riverctl spawn "wlr-randr --output HDMI-A-1 --mode 1920x1080@74.973Hz"
-riverctl spawn "wbg \"${RIVER_CONFIG_DIR}/wallpaper.png\""
+[ -z "$started" ] && {
+	dbus-update-activation-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=river
+	pgrep -x pipewire || pipewire &
+	wlr-randr --output HDMI-A-1 --mode 1920x1080@74.973Hz
+	wbg -s "${HOME}/Pictures/wlp.jpeg" &
+	clipse -listen &
+	started=1
+}
 
 riverctl map normal Super Q close
 riverctl map normal Super+Shift Q exit
@@ -30,6 +34,7 @@ riverctl map normal Super+Shift Return zoom
 riverctl map normal Super Return spawn "$term"
 riverctl map normal Super B spawn "$browser"
 riverctl map normal Super E spawn "$launcher"
+riverctl map normal Super V spawn "$term -e clipse"
 riverctl map normal None Print spawn "${RIVER_CONFIG_DIR}/scripts/sreenshot.sh"
 riverctl map normal Shift Print spawn "${RIVER_CONFIG_DIR}/scripts/sreenshot.sh all"
 

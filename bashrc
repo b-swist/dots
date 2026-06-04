@@ -1,5 +1,3 @@
-# ~/.bashrc
-
 __is_installed() {
 	local cmd
 	for cmd in "$@"; do
@@ -21,14 +19,31 @@ __get_distro() {
 }
 
 __append_path() {
-	local dir="${1%/}"
-	case ":$PATH:" in
-	*:"$dir":*) ;;
-	*) PATH="${PATH:+$PATH:}$dir" ;;
-	esac
+	local d="${1%/}"
+	[[ ":$PATH:" != *:"$d":* ]] && PATH="${PATH:+$PATH:}$d"
 }
 
-DISTRO="$(__get_distro)"
+__dedupe_path() {
+	local IFS=":"
+	local d
+	local -A seen
+	local -a result=()
+
+	for d in $PATH; do
+		[ -z "$d" ] && continue
+		if [ -z "${seen[$d]}" ]; then
+			result+=("$d")
+			seen["$d"]=1
+		fi
+	done
+
+	PATH=$(
+		IFS=":"
+		echo "${result[*]}"
+	)
+}
+
+distro="$(__get_distro)"
 
 ## xdg base dir
 set_xdg() {
@@ -62,8 +77,14 @@ export PYTHON_HISTORY="${XDG_STATE_HOME}/python_history"
 export PYTHONPYCACHEPREFIX="${XDG_CACHE_HOME}/python"
 export PYTHONUSERBASE="${XDG_DATA_HOME}/python"
 
-export NPM_CONFIG_USERCONFIG="${XDG_CONFIG_HOME}/npm/npmrc"
 export NODE_REPL_HISTORY="${XDG_STATE_HOME}/node_repl_history"
+npm_config_dir="${XDG_CONFIG_HOME}/npm"
+export NPM_CONFIG_USERCONFIG="${npm_config_dir}/npmrc"
+export NPM_CONFIG_PREFIX="${XDG_DATA_HOME}/npm"
+export NPM_CONFIG_CACHE="${XDG_CACHE_HOME}/npm"
+export NPM_CONFIG_INIT_MODLUE="${npm_config_dir}/npm-init.js"
+export NPM_CONFIG_LOGS_DIR="${npm_config_dir}/npmrc"
+unset npm_config_dir
 
 export ELM_HOME="${XDG_CONFIG_HOME}/elm"
 
@@ -71,7 +92,7 @@ export _JAVA_OPTIONS="-Djava.util.prefs.userRoot="${XDG_CONFIG_HOME}/java""
 export GRADLE_USER_HOME="${XDG_DATA_HOME}/gradle"
 
 export ELECTRON_OZONE_PLATFORM_HINT=auto
-if [ -n "$WAYLAND_DISPLAY" ]; then
+if [ "$WAYLAND_DISPLAY" ]; then
 	export MOZ_ENABLE_WAYLAND=1
 	export QT_QPA_PLATFORM="wayland;xcb"
 fi
@@ -91,23 +112,29 @@ export PAGER=less
 
 ## path
 set_path() {
-	local path=(
-		"/usr/local/bin"
-		"${XDG_BIN_HOME}/${DISTRO}"
+	local extra_path d
+
+	[ "$PATH" ] && __dedupe_path || PATH="/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/sbin:/sbin:/bin"
+
+	extra_path=(
 		"${XDG_BIN_HOME}"
-		"${XDG_DATA_HOME}/npm/bin"
+		"${CARGO_HOME}/bin"
+		"${NPM_CONFIG_PREFIX}/bin"
 		"${GOPATH}/bin"
 	)
 
-	local d
-	for d in "${path[@]}"; do
+	for d in "${extra_path[@]}"; do
 		__append_path "$d"
 	done
+
+	export PATH
 }
 set_path
 unset set_path
 
 [[ $- != *i* ]] && return
+
+unalias -a
 
 set -o noclobber
 shopt -s autocd
@@ -122,10 +149,10 @@ __is_installed atuin && eval "$(atuin init --disable-up-arrow bash)"
 __is_installed star && eval "$(command star init bash)"
 
 if __is_installed doas; then
-	alias doedit='doas ${EDITOR:-vi}'
+	__is_installed doasedit || alias doasedit='doas ${EDITOR:-vi}'
 	__has_completion doas || complete -cf doas
 
-	if [ "$DISTRO" = void ]; then
+	if [ "$distro" = void ]; then
 		for cmd in poweroff reboot zzz ZZZ; do
 			# shellcheck disable=SC2139
 			alias "$cmd"="doas /usr/bin/${cmd}"
@@ -137,7 +164,7 @@ fi
 __is_installed sudo && ! __has_completion sudo && complete -cf sudo
 
 ## prompt
-if [[ -f /usr/share/git/git-prompt.sh ]]; then
+if [ -f /usr/share/git/git-prompt.sh ]; then
 	source /usr/share/git/git-prompt.sh
 	_has_git_prompt=1
 else
@@ -187,7 +214,6 @@ __git_prompt_cmd() {
 		action="${BASH_REMATCH[2],,}"
 	elif [ "$default" ]; then
 		branch="$default"
-		action=""
 	else
 		return
 	fi
@@ -203,7 +229,7 @@ __prompt_cmd() {
 	[ $return -ne 0 ] && _symbol="${_c[RED]}>${_c[RESET]}" || _symbol=">"
 
 	_jobs=$(__get_jobs)
-	[ "$_jobs" ] && _jobs="${_c[GRAY]}[$(__get_jobs)]${_c[RESET]} "
+	[ "$_jobs" ] && _jobs="${_c[BOLD]}${_c[GRAY]}[$(__get_jobs)]${_c[RESET]} "
 
 	[ "$_has_git_prompt" ] && _git_prompt="$(__git_prompt_cmd)"
 }
@@ -211,7 +237,7 @@ __prompt_cmd() {
 PROMPT_COMMAND=__prompt_cmd
 __is_installed direnv && eval "$(direnv hook bash)"
 
-PS1="${_c[BOLD]}\$_jobs${_c[MAGENTA]}\u${_c[RESET]} at ${_c[BLUE]}\h${_c[RESET]} in ${_c[CYAN]}[\w]${_c[RESET]}\$_git_prompt\n\$_symbol "
+PS1="\$_jobs${_c[MAGENTA]}\u${_c[RESET]} at ${_c[BLUE]}\h${_c[RESET]} in ${_c[CYAN]}[\w]${_c[RESET]}\$_git_prompt\n\$_symbol "
 
 export PS1 PROMPT_COMMAND
 
@@ -248,7 +274,6 @@ if __is_installed grim slurp magick; then
 	}
 fi
 
-[ "$(type -t ll)" = "alias" ] && unalias ll
 ll() {
 	command ls -Ahlv --color=always --group-directories-first --time-style=long-iso "$@" | $PAGER
 }
