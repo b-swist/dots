@@ -1,5 +1,8 @@
 #!/bin/sh
 
+## WARNING!
+## This config won't work with new verions of river (>=0.4.0)
+
 # basic config
 layout=rivertile
 browser=firefox
