@@ -105,7 +105,7 @@ export INPUTRC="${XDG_CONFIG_HOME}/readline/inputrc"
 export WGETRC="${XDG_CONFIG_HOME}/wgetrc"
 export LESS="-FiMqRWX -x4 -z3"
 
-export EDITOR=nvim
+export EDITOR=hx
 export VISUAL="$EDITOR"
 export BROWSER=firefox
 export PAGER=less
