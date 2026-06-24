@@ -82,7 +82,7 @@ npm_config_dir="${XDG_CONFIG_HOME}/npm"
 export NPM_CONFIG_USERCONFIG="${npm_config_dir}/npmrc"
 export NPM_CONFIG_PREFIX="${XDG_DATA_HOME}/npm"
 export NPM_CONFIG_CACHE="${XDG_CACHE_HOME}/npm"
-export NPM_CONFIG_INIT_MODLUE="${npm_config_dir}/npm-init.js"
+export NPM_CONFIG_INIT_MODULE="${npm_config_dir}/npm-init.js"
 export NPM_CONFIG_LOGS_DIR="${npm_config_dir}/npmrc"
 unset npm_config_dir
 
@@ -294,8 +294,10 @@ rungui() {
 alias rd="rmdir"
 alias cp="cp -iv"
 alias mv="mv -iv"
+alias rm="rm -Iv"
 alias ..="cd .."
 alias ...="cd ../.."
 alias ls="ls -Fv --color=auto"
-# shellcheck disable=SC2139
-alias wget="wget --hsts-file='${XDG_CACHE_HOME}/wget-hsts'"
+
+alias wget='wget --hsts-file="$XDG_CACHE_HOME/wget-hsts"'
+# alias arduino-cli='arduino-cli --config-dir "$XDG_CONFIG_HOME/arduino15"'
