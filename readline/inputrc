@@ -4,7 +4,7 @@ set show-all-if-unmodified On
 set bell-style none
 set blink-matching-paren On
 set enable-bracketed-paste On
-set mark-symlinked-directories On
+set mark-symlinked-directories Off
 set echo-control-characters Off
 
 set colored-stats On
