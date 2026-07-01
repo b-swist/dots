@@ -1,18 +1,18 @@
-return {
-    "mason-org/mason-lspconfig.nvim",
-    dependencies = {
-        { "mason-org/mason.nvim", config = true },
-        "neovim/nvim-lspconfig",
-    },
-    opts = {
-        automatic_enable = true,
-        ensure_installed = {
-            "lua_ls",
-            "pylsp",
-            "tinymist",
-            "ts_ls",
-            "gopls",
-            "bashls",
-        },
-    },
+vim.pack.add({ gh("neovim/nvim-lspconfig") })
+
+local servers = {
+    "lua_ls",
+    "bashls",
+    "pylsp",
+    "gopls",
+    "tinymist",
+    "ts_ls",
+    "clangd",
+    "svelte",
 }
+
+vim.iter(servers):map(function(s)
+    vim.lsp.enable(s)
+end)
+
+return { servers = servers }

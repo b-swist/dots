@@ -1,68 +1,43 @@
 vim.g.mapleader = vim.keycode("<Space>")
 vim.g.maplocalleader = "\\"
 
-local opts = setmetatable({
-    noremap = true,
-    silent = true,
-}, {
-    __concat = function(t1, t2)
-        return vim.tbl_extend("force", t1, t2)
-    end,
-})
+vim.keymap.set("n", "x", '"_x')
+vim.keymap.set("x", "p", '"_dP')
+vim.keymap.set("t", "<Esc>", "<C-\\><C-n>")
+vim.keymap.set("n", "<Esc>", "<Cmd>noh<CR>")
 
-vim.keymap.set("n", "x", '"_x', opts)
-vim.keymap.set("t", "<Esc>", [[<C-\><C-n>]], opts)
-vim.keymap.set("n", "<Esc>", "<cmd>noh<CR>")
+vim.iter({ "<Up>", "<Down>" }):map(function(k)
+    vim.keymap.set("c", k, function()
+        return vim.fn.wildmenumode() == 1 and "<C-e>" .. k or k
+    end, { expr = true })
+end)
 
---- motions
-vim.keymap.set({ "n", "x" }, "j", function()
-    return vim.v.count == 0 and "gj" or "j"
-end, opts .. { expr = true })
+vim.iter({ "h", "j", "k", "l" }):map(function(k)
+    vim.keymap.set({ "n", "x" }, "<C-" .. k .. ">", "<C-w>" .. k)
+end)
 
-vim.keymap.set({ "n", "x" }, "k", function()
-    return vim.v.count == 0 and "gk" or "k"
-end, opts .. { expr = true })
+vim.keymap.set("x", "<", "<gv")
+vim.keymap.set("x", ">", ">gv")
+vim.keymap.set("n", "<leader>d", "<cmd>bdel<CR>")
 
-vim.keymap.set({ "n", "x" }, "gl", "$")
-vim.keymap.set({ "n", "x" }, "gh", "0")
+vim.keymap.set({ "n", "i" }, "<M-j>", "<cmd>cnext<CR>")
+vim.keymap.set({ "n", "i" }, "<M-k>", "<cmd>cprev<CR>")
 
--- vim.keymap.set("x", "J", ":m '>+1<CR>gv=gv", opts .. { desc = "Move selection down" })
--- vim.keymap.set("x", "K", ":m '<-2<CR>gv=gv", opts .. { desc = "Move selection up" })
+vim.keymap.set("n", "gd", vim.lsp.buf.definition)
+vim.keymap.set("n", "gD", vim.lsp.buf.declaration)
 
-vim.keymap.set({ "n", "x" }, "<C-h>", "<C-w>h", opts)
-vim.keymap.set({ "n", "x" }, "<C-l>", "<C-w>l", opts)
-vim.keymap.set({ "n", "x" }, "<C-j>", "<C-w>j", opts)
-vim.keymap.set({ "n", "x" }, "<C-k>", "<C-w>k", opts)
+vim.keymap.set("n", "<leader>i", vim.show_pos)
+vim.keymap.set("n", "<leader>I", vim.treesitter.inspect_tree)
 
-vim.keymap.set("x", "<", "<gv", opts)
-vim.keymap.set("x", ">", ">gv", opts)
+vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist)
 
-for _, key in ipairs({
+vim.iter({
     "<Space>",
     "<BS>",
     "<Up>",
     "<Down>",
     "<Left>",
     "<Right>",
-}) do
-    vim.keymap.set("n", key, "<Nop>")
-end
-
---- tabs
-for i = 1, 9 do
-    vim.keymap.set("n", "<M-" .. i .. ">", i .. "gt", opts .. { desc = "Jump to tab #" .. i })
-end
-
---- buffers
-vim.keymap.set("n", "<leader>bd", "<cmd>bdel<CR>", opts .. { desc = "Delete current buffer" })
-
---- quickfix
-vim.keymap.set({ "n", "i" }, "<M-j>", "<cmd>cnext<CR>", opts .. { desc = "Jump to the next quickfix item" })
-vim.keymap.set({ "n", "i" }, "<M-k>", "<cmd>cprev<CR>", opts .. { desc = "Jump to the previous quickfix item" })
-
---- lsp
-vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts .. { desc = "Jump to definition" })
-vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts .. { desc = "Jump to declaration" })
-
---- diagnostic
-vim.keymap.set("n", "<leader>c", vim.diagnostic.setloclist, opts .. { desc = "Open quickfix diagnostic list" })
+}):map(function(k)
+    vim.keymap.set({ "n", "x" }, k, "<Nop>")
+end)

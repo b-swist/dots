@@ -1,14 +1,12 @@
-require("config.opts")
-require("config.keymaps")
-require("config.lsp")
-require("config.lazy")
+if vim.fn.has("nvim-0.12") ~= 1 then
+    vim.notify("this config works only works with version 0.12")
+    return
+end
 
-vim.api.nvim_create_autocmd("TextYankPost", {
-    group = vim.api.nvim_create_augroup("yank-highlight", { clear = true }),
-    callback = function()
-        vim.hl.on_yank({
-            -- higroup = "Visual",
-            timeout = 220,
-        })
-    end,
-})
+vim.loader.enable()
+require("vim._core.ui2").enable()
+
+require("config")
+require("plugins")
+
+vim.cmd.colorscheme("retrobox")
