@@ -97,6 +97,8 @@ if [ "$WAYLAND_DISPLAY" ]; then
 	export QT_QPA_PLATFORM="wayland;xcb"
 fi
 
+export PLATFORMIO_CORE_DIR="${XDG_DATA_HOME}/platformio"
+
 export XINITRC="${XDG_CONFIG_HOME}/X11/xinitrc"
 export XAUTHORITY="${XDG_RUNTIME_DIR}/Xauthority"
 export XCURSOR_PATH="${XCURSOR_PATH:+$XCURSOR_PATH:}${XDG_DATA_HOME}/icons"
