@@ -5,7 +5,9 @@ return {
         end
 
         local path = client.workspace_folders[1].name
-        if path ~= vim.fn.stdpath("config") then
+        --- resolve any symlinks
+        local config_dir = vim.uv.fs_realpath(vim.fn.stdpath("config"))
+        if path ~= config_dir then
             return
         end
 

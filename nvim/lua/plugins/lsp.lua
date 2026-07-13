@@ -9,6 +9,7 @@ local servers = {
     "ts_ls",
     "clangd",
     "svelte",
+    "hls",
 }
 
 vim.iter(servers):map(function(s)

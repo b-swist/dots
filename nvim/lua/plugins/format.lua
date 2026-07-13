@@ -7,6 +7,7 @@ local formatters = {
     "black",
     "prettier",
     "shfmt",
+    "clang-format",
 }
 
 conform.setup({

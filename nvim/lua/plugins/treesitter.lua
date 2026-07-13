@@ -22,18 +22,24 @@ vim.pack.add({
 
 local ts = require("nvim-treesitter")
 
----@param ft string
+---@param lang string
 ---@return boolean
-local is_installed = function(ft)
-    local installed = ts.get_installed()
-    return vim.tbl_contains(installed, ft)
+local is_installed = function(lang)
+    local installed = ts.get_installed("parsers")
+    return vim.tbl_contains(installed, lang)
 end
 
----@param ft string
+---@param lang string
 ---@return boolean
-local is_available = function(ft)
+local is_available = function(lang)
     local parsers = ts.get_available()
-    return vim.tbl_contains(parsers, ft)
+    return vim.tbl_contains(parsers, lang)
+end
+
+---@param buf integer
+local start_treesitter = function(buf, lang)
+    vim.treesitter.start(buf, lang)
+    vim.bo[buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
 end
 
 vim.api.nvim_create_autocmd("BufEnter", {
@@ -44,17 +50,19 @@ vim.api.nvim_create_autocmd("BufEnter", {
             return
         end
 
-        local ft = vim.bo.filetype
-        if not ft or ft == "" then
+        local buf = ev.buf
+        local lang = vim.treesitter.language.get_lang(ev.match)
+        if not lang then
             return
         end
 
-        if is_installed(ft) or not is_available(ft) then
+        if is_installed(lang) or not is_available(lang) then
             return
         end
 
-        ts.install(ft):wait(5 * 60 * 1000)
-        vim.treesitter.start(ev.buf)
+        ts.install(lang):await(function()
+            start_treesitter(buf, lang)
+        end)
     end,
 })
 
@@ -62,14 +70,16 @@ vim.api.nvim_create_autocmd("FileType", {
     pattern = "*",
     group = vim.api.nvim_create_augroup("TreesitterAutoStart", { clear = true }),
     callback = function(ev)
-        local ft = vim.bo.filetype
-        if not ft or ft == "" then
+        local buf = ev.buf
+
+        local lang = vim.treesitter.language.get_lang(ev.match)
+        if not lang then
             return
         end
 
-        if is_available(ft) then
+        if is_available(lang) then
             pcall(function()
-                vim.treesitter.start(ev.buf)
+                start_treesitter(buf)
             end)
         end
     end,
