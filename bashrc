@@ -78,15 +78,17 @@ export PYTHONPYCACHEPREFIX="${XDG_CACHE_HOME}/python"
 export PYTHONUSERBASE="${XDG_DATA_HOME}/python"
 
 export NODE_REPL_HISTORY="${XDG_STATE_HOME}/node_repl_history"
-npm_config_dir="${XDG_CONFIG_HOME}/npm"
-export NPM_CONFIG_USERCONFIG="${npm_config_dir}/npmrc"
 export NPM_CONFIG_PREFIX="${XDG_DATA_HOME}/npm"
 export NPM_CONFIG_CACHE="${XDG_CACHE_HOME}/npm"
+npm_config_dir="${XDG_CONFIG_HOME}/npm"
+export NPM_CONFIG_USERCONFIG="${npm_config_dir}/npmrc"
 export NPM_CONFIG_INIT_MODULE="${npm_config_dir}/npm-init.js"
 export NPM_CONFIG_LOGS_DIR="${npm_config_dir}/npmrc"
 unset npm_config_dir
 
 export ELM_HOME="${XDG_CONFIG_HOME}/elm"
+
+declare -x GHCUP_USE_XDG_DIRS
 
 export _JAVA_OPTIONS="-Djava.util.prefs.userRoot="${XDG_CONFIG_HOME}/java""
 export GRADLE_USER_HOME="${XDG_DATA_HOME}/gradle"
@@ -147,7 +149,7 @@ shopt -s dotglob
 shopt -s globstar
 
 __is_installed fzf && eval "$(fzf --bash)"
-__is_installed atuin && eval "$(atuin init --disable-up-arrow bash)"
+# __is_installed atuin && eval "$(atuin init --disable-up-arrow bash)"
 __is_installed star && eval "$(command star init bash)"
 
 if __is_installed doas; then
