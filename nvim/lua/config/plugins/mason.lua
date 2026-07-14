@@ -4,9 +4,9 @@ vim.pack.add({
     gh("WhoIsSethDaniel/mason-tool-installer.nvim"),
 })
 
-local servers = require("plugins.lsp").servers
-local formatters = require("plugins.format").formatters
-local linters = require("plugins.lint").linters
+local servers = require("config.plugins.lsp").servers
+local formatters = require("config.plugins.format").formatters
+local linters = require("config.plugins.lint").linters
 
 ---@param ...table
 ---@return table
