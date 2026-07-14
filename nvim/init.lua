@@ -1,5 +1,5 @@
 if vim.fn.has("nvim-0.12") ~= 1 then
-    vim.notify("this config works only works with version 0.12")
+    vim.notify("this config works only works with version >=0.12")
     return
 end
 
