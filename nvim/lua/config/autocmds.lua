@@ -1,17 +1,11 @@
+---@diagnostic disable-next-line
+local hl_func = vim.fn.has("nvim-0.13") == 1 and vim.hl.hl_op or vim.hl.on_yank
 vim.api.nvim_create_autocmd("TextYankPost", {
     group = vim.api.nvim_create_augroup("YankHighlight", { clear = true }),
     callback = function()
-        local timeout = 220
-        if vim.fn.has("nvim-0.13") then
-            vim.hl.hl_op({
-                timeout = timeout,
-            })
-        else
-            ---@diagnostic disable-next-line
-            vim.hl.on_yank({
-                timeout = timeout,
-            })
-        end
+        hl_func({
+            timeout = 220,
+        })
     end,
 })
 

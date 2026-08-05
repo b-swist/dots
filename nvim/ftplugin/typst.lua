@@ -1,4 +1,5 @@
 vim.bo.tabstop = 2
 vim.bo.expandtab = true
+vim.wo.wrap = true
 
-vim.keymap.set("n", "<leader>l", "<cmd>LspTinymistExportPdf<CR>", { buffer = 0 })
+vim.keymap.set("n", "<leader>l", vim.cmd.LspTinymistExportPdf, { buffer = 0 })

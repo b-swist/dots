@@ -25,6 +25,7 @@ vim.o.listchars = "tab:> ,trail:-,nbsp:."
 vim.o.virtualedit = "block"
 vim.o.guicursor = "n-v-c-sm:block,i-ci-ve-t:ver25,r-cr-o:hor20"
 vim.o.winborder = "single"
+vim.o.cmdheight = 0
 
 vim.o.pumheight = 20
 vim.o.shortmess = vim.o.shortmess .. "c"
@@ -32,7 +33,7 @@ vim.o.shortmess = vim.o.shortmess .. "c"
 vim.o.wildmode = "noselect:lastused,full"
 vim.o.wildoptions = "pum"
 
-vim.o.complete = "o"
+vim.o.complete = "o,."
 vim.o.completeopt = "menuone,popup,noselect,fuzzy"
 
 vim.o.foldenable = true
@@ -40,7 +41,7 @@ vim.o.foldlevelstart = 99
 vim.o.foldmethod = "expr"
 vim.o.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 
-vim.o.wrap = true
+vim.o.wrap = false
 vim.o.linebreak = true
 vim.o.breakindent = true
 

@@ -70,5 +70,13 @@ vim.api.nvim_create_autocmd("LspAttach", {
                 vim.lsp.on_type_formatting.enable(true, { id = id })
             end)
         end
+
+        if client:supports_method("textDocument/definition", buf) then
+            vim.keymap.set("n", "gd", vim.lsp.buf.definition)
+        end
+
+        if client:supports_method("textDocument/declaration", buf) then
+            vim.keymap.set("n", "gD", vim.lsp.buf.declaration)
+        end
     end,
 })

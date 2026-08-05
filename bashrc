@@ -23,26 +23,6 @@ __append_path() {
 	[[ ":$PATH:" != *:"$d":* ]] && PATH="${PATH:+$PATH:}$d"
 }
 
-__dedupe_path() {
-	local IFS=":"
-	local d
-	local -A seen
-	local -a result=()
-
-	for d in $PATH; do
-		[ -z "$d" ] && continue
-		if [ -z "${seen[$d]}" ]; then
-			result+=("$d")
-			seen["$d"]=1
-		fi
-	done
-
-	PATH=$(
-		IFS=":"
-		echo "${result[*]}"
-	)
-}
-
 distro="$(__get_distro)"
 
 ## xdg base dir
@@ -78,15 +58,14 @@ export PYTHONPYCACHEPREFIX="${XDG_CACHE_HOME}/python"
 export PYTHONUSERBASE="${XDG_DATA_HOME}/python"
 
 export NODE_REPL_HISTORY="${XDG_STATE_HOME}/node_repl_history"
+export NPM_CONFIG_USERCONFIG="${XDG_CONFIG_HOME}/npm/npmrc"
 export NPM_CONFIG_PREFIX="${XDG_DATA_HOME}/npm"
 export NPM_CONFIG_CACHE="${XDG_CACHE_HOME}/npm"
-npm_config_dir="${XDG_CONFIG_HOME}/npm"
-export NPM_CONFIG_USERCONFIG="${npm_config_dir}/npmrc"
-export NPM_CONFIG_INIT_MODULE="${npm_config_dir}/npm-init.js"
-export NPM_CONFIG_LOGS_DIR="${npm_config_dir}/npmrc"
-unset npm_config_dir
+export NPM_CONFIG_LOGS_DIR="${XDG_STATE_HOME}/npm/logs"
+export NPM_CONFIG_INIT_MODULE="${XDG_CONFIG_HOME}/npm/config/npm-init.js"
 
 export ELM_HOME="${XDG_CONFIG_HOME}/elm"
+export PLTUSERHOME="${XDG_DATA_HOME}/racket"
 
 declare -x GHCUP_USE_XDG_DIRS
 
@@ -107,6 +86,7 @@ export XCURSOR_PATH="${XCURSOR_PATH:+$XCURSOR_PATH:}${XDG_DATA_HOME}/icons"
 
 export INPUTRC="${XDG_CONFIG_HOME}/readline/inputrc"
 export WGETRC="${XDG_CONFIG_HOME}/wgetrc"
+[ ! -f "$WGETRC" ] && touch -- "$WGETRC"
 export LESS="-FiMqRWX -x4 -z3"
 
 export EDITOR=nvim
@@ -118,7 +98,7 @@ export PAGER=less
 set_path() {
 	local extra_path d
 
-	[ "$PATH" ] && __dedupe_path || PATH="/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/sbin:/sbin:/bin"
+	[ "$PATH" ] || PATH="/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin"
 
 	extra_path=(
 		"${XDG_BIN_HOME}"
@@ -300,8 +280,5 @@ alias cp="cp -iv"
 alias mv="mv -iv"
 alias rm="rm -Iv"
 alias ..="cd .."
-alias ...="cd ../.."
 alias ls="ls -Fv --color=auto"
-
 alias wget='wget --hsts-file="$XDG_CACHE_HOME/wget-hsts"'
-# alias arduino-cli='arduino-cli --config-dir "$XDG_CONFIG_HOME/arduino15"'

@@ -4,4 +4,4 @@ vim.api.nvim_create_user_command("Undotree", function()
     vim.cmd.Undotree()
 end, {})
 
-vim.keymap.set("n", "<leader>u", "<Cmd>Undotree<CR>")
+vim.keymap.set("n", "<leader>u", vim.cmd.Undotree)
