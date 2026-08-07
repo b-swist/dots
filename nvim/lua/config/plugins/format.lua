@@ -8,6 +8,7 @@ local formatters = {
     "prettier",
     "shfmt",
     "clang-format",
+    "alejandra",
 }
 
 conform.setup({
@@ -29,6 +30,8 @@ conform.setup({
 
         c = { "clang-format" },
         cpp = { "clang-format" },
+
+        nix = { "alejandra" },
     },
     default_format_opts = {
         lsp_format = "fallback",

@@ -1,6 +1,6 @@
 vim.pack.add({ gh("neovim/nvim-lspconfig") })
 
-local servers = {
+local required_servers = {
     "lua_ls",
     "bashls",
     "pylsp",
@@ -12,8 +12,15 @@ local servers = {
     "hls",
 }
 
-vim.iter(servers):map(function(s)
+-- for servers that can't be installed through Mason
+local optional_servers = {
+    "nixd",
+}
+
+all_servers = require("utils").merge_lists(required_servers, optional_servers)
+
+vim.iter(ipairs(all_servers)):each(function(_, s)
     vim.lsp.enable(s)
 end)
 
-return { servers = servers }
+return { servers = required_servers }
