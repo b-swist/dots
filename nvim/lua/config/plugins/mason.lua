@@ -28,5 +28,5 @@ local ensure_installed = merge_lists(servers, formatters, linters)
 require("mason").setup()
 require("mason-tool-installer").setup({
     ensure_installed = ensure_installed,
-    auto_update = true,
+    run_on_start = false,
 })

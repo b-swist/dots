@@ -215,7 +215,7 @@ __prompt_cmd() {
 	_jobs=$(__get_jobs)
 	[ "$_jobs" ] && _jobs="${_c[BOLD]}${_c[GRAY]}[$(__get_jobs)]${_c[RESET]} "
 
-	[ "$_has_git_prompt" ] && _git_prompt="$(__git_prompt_cmd)"
+	[ "$_has_git_prompt" -eq 1 ] && _git_prompt="$(__git_prompt_cmd)"
 }
 
 PROMPT_COMMAND=__prompt_cmd
