@@ -56,6 +56,8 @@ vim.api.nvim_create_autocmd("LspAttach", {
                 end
                 client.server_capabilities.completionProvider.triggerCharacters = chars
 
+                vim.bo[buf].complete = "o"
+
                 vim.lsp.completion.enable(true, client.id, buf, {
                     autotrigger = true,
                     convert = function(i)
