@@ -37,7 +37,7 @@ conform.setup({
         lsp_format = "fallback",
     },
     format_on_save = function(buf)
-        local ignore_ft = {}
+        local ignore_ft = { "nix" }
         if vim.tbl_contains(ignore_ft, vim.bo[buf].filetype) then
             return
         end

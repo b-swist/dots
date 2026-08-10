@@ -25,7 +25,6 @@ vim.o.listchars = "tab:> ,trail:-,nbsp:."
 vim.o.virtualedit = "block"
 vim.o.guicursor = "n-v-c-sm:block,i-ci-ve-t:ver25,r-cr-o:hor20"
 vim.o.winborder = "single"
-vim.o.cmdheight = 0
 
 vim.o.pumheight = 20
 vim.o.shortmess = vim.o.shortmess .. "c"
