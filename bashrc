@@ -64,12 +64,14 @@ export NPM_CONFIG_CACHE="${XDG_CACHE_HOME}/npm"
 export NPM_CONFIG_LOGS_DIR="${XDG_STATE_HOME}/npm/logs"
 export NPM_CONFIG_INIT_MODULE="${XDG_CONFIG_HOME}/npm/config/npm-init.js"
 
+export OPAMROOT="${XDG_DATA_HOME}/opam"
+
 export ELM_HOME="${XDG_CONFIG_HOME}/elm"
 export PLTUSERHOME="${XDG_DATA_HOME}/racket"
 
 declare -x GHCUP_USE_XDG_DIRS
 
-export _JAVA_OPTIONS="-Djava.util.prefs.userRoot="${XDG_CONFIG_HOME}/java""
+# export _JAVA_OPTIONS="-Djava.util.prefs.userRoot="${XDG_CONFIG_HOME}/java""
 export GRADLE_USER_HOME="${XDG_DATA_HOME}/gradle"
 
 export ELECTRON_OZONE_PLATFORM_HINT=auto

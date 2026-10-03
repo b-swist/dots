@@ -10,6 +10,8 @@ local required_servers = {
     "clangd",
     "svelte",
     "hls",
+    "ocamllsp",
+    "nushell",
 }
 
 -- for servers that can't be installed through Mason

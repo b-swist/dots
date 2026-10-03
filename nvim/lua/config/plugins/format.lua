@@ -16,7 +16,9 @@ conform.setup({
         lua = { "stylua" },
         go = { "gofmt" },
         python = { "black" },
+        ocaml = { "ocamlformat" },
         typst = { lsp_format = "prefer" },
+        nu = { "nufmt" },
 
         sh = { "shfmt" },
         bash = { "shfmt" },

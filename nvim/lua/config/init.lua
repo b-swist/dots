@@ -1,3 +1,4 @@
+require("config.filetypes")
 require("config.opts")
 require("config.keymaps")
 require("config.diagnostic")

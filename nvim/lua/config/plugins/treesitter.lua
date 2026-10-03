@@ -37,10 +37,29 @@ local is_available = function(lang)
 end
 
 ---@param buf integer
+---@param lang? string
 local start_treesitter = function(buf, lang)
-    vim.treesitter.start(buf, lang)
+    if lang ~= "" then
+        vim.treesitter.start(buf, lang)
+    else
+        vim.treesitter.start(buf)
+    end
+
     vim.bo[buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
 end
+
+vim.api.nvim_create_user_command("TSStart", function(opts)
+    local buf = vim.api.nvim_get_current_buf()
+    if opts.count >= 1 then
+        start_treesitter(buf, opts.args)
+    else
+        start_treesitter(buf)
+    end
+end, {
+    nargs = "?",
+    desc = "Start treesitter for current buffer",
+    complete = "filetype",
+})
 
 vim.api.nvim_create_autocmd("BufEnter", {
     pattern = "*",
