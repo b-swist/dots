@@ -64,12 +64,10 @@ export NPM_CONFIG_CACHE="${XDG_CACHE_HOME}/npm"
 export NPM_CONFIG_LOGS_DIR="${XDG_STATE_HOME}/npm/logs"
 export NPM_CONFIG_INIT_MODULE="${XDG_CONFIG_HOME}/npm/config/npm-init.js"
 
+export GHCUP_USE_XDG_DIRS=1
 export OPAMROOT="${XDG_DATA_HOME}/opam"
-
 export ELM_HOME="${XDG_CONFIG_HOME}/elm"
 export PLTUSERHOME="${XDG_DATA_HOME}/racket"
-
-declare -x GHCUP_USE_XDG_DIRS
 
 # export _JAVA_OPTIONS="-Djava.util.prefs.userRoot="${XDG_CONFIG_HOME}/java""
 export GRADLE_USER_HOME="${XDG_DATA_HOME}/gradle"
@@ -81,20 +79,32 @@ if [ "$WAYLAND_DISPLAY" ]; then
 fi
 
 export PLATFORMIO_CORE_DIR="${XDG_DATA_HOME}/platformio"
+export GNUPGHOME="${XDG_DATA_HOME}/gnupg"
 
 export XINITRC="${XDG_CONFIG_HOME}/X11/xinitrc"
 export XAUTHORITY="${XDG_RUNTIME_DIR}/Xauthority"
+
+GPG_TTY="$(tty)"
+export GPG_TTY
+
 export XCURSOR_PATH="${XCURSOR_PATH:+$XCURSOR_PATH:}${XDG_DATA_HOME}/icons"
 
 export INPUTRC="${XDG_CONFIG_HOME}/readline/inputrc"
 export WGETRC="${XDG_CONFIG_HOME}/wgetrc"
 [ ! -f "$WGETRC" ] && touch -- "$WGETRC"
+
 export LESS="-FiMqRWX -x4 -z3"
+export MOOR="--quit-if-one-screen --tab-size=4"
+
+export GH_TELEMETRY=
+export DO_NOT_TRACK=1
 
 export EDITOR=nvim
 export VISUAL="$EDITOR"
 export BROWSER=firefox
-export PAGER=less
+
+__is_installed moor && PAGER=moor || PAGER=less
+export PAGER
 
 ## path
 set_path() {
@@ -136,41 +146,28 @@ __is_installed star && eval "$(command star init bash)"
 
 if __is_installed doas; then
 	__is_installed doasedit || alias doasedit='doas ${EDITOR:-vi}'
-	__has_completion doas || complete -cf doas
-
-	if [ "$distro" = void ]; then
-		for cmd in poweroff reboot zzz ZZZ; do
-			# shellcheck disable=SC2139
-			alias "$cmd"="doas /usr/bin/${cmd}"
-		done
-		unset cmd
-	fi
 fi
 
-__is_installed sudo && ! __has_completion sudo && complete -cf sudo
-
-## prompt
-if [ -f /usr/share/git/git-prompt.sh ]; then
-	source /usr/share/git/git-prompt.sh
-	_has_git_prompt=1
-else
-	_has_git_prompt=0
-fi
+case "$distro" in
+arch)
+	alias zzz="systemctl suspend"
+	;;
+void)
+	__is_installed doas && for cmd in poweroff reboot zzz ZZZ; do
+		# shellcheck disable=SC2139
+		alias "$cmd"="doas /usr/bin/${cmd}"
+	done
+	unset cmd
+	;;
+esac
 
 __esc() {
 	printf "\001%s\002" "$1"
 }
 
 __set_color() {
-	if [ "$1" -ge 0 ] 2>/dev/null && [ "$1" -le 255 ]; then
-		__esc "$(tput setaf "$1")"
-	fi
+	__esc "$(tput setaf "$1")"
 }
-
-## TODO: make these settings work better
-# export GIT_PS1_SHOWDIRTYSTATE=1
-# export GIT_PS1_SHOWSTASHSTATE=1
-# export GIT_PS1_SHOWUNTRACKEDFILES=1
 
 declare -A _c=(
 	[RESET]="$(__esc "$(tput sgr0)")"
@@ -190,34 +187,40 @@ __get_jobs() {
 	[ $n -gt 0 ] && echo $n
 }
 
-__git_prompt_cmd() {
-	local default branch action
-	default="$(__git_ps1 '%s')"
+__jobs_prompt() {
+	local jobs
+	jobs=$(__get_jobs)
+	[ -z "$jobs" ] && return
+	echo "${_c[BOLD]}${_c[GRAY]}[$jobs]${_c[RESET]} "
+}
 
-	local regex='(.*)\|([A-Z\ -]+)$'
-	if [[ "$default" =~ $regex ]]; then
-		branch="${BASH_REMATCH[1]}"
-		action="${BASH_REMATCH[2],,}"
-	elif [ "$default" ]; then
-		branch="$default"
-	else
-		return
-	fi
+__git_branch_prompt() {
+	local branch
+	branch="$(git branch --show-current 2>/dev/null)"
+	[ -z "$branch" ] && return
 
 	local prompt=" on ${_c[GREEN]}($branch)${_c[RESET]}"
-	[ "$action" ] && prompt+=" doing ${_c[YELLOW]}<$action>${_c[RESET]}"
+	# [ "$action" ] && prompt+=" doing ${_c[YELLOW]}<$action>${_c[RESET]}"
 
 	echo "$prompt"
 }
 
+__symbol_prompt() {
+	local ret symbol
+	ret="$1"
+	symbol=">"
+	if [ "$ret" -ne 0 ]; then
+		echo "${_c[RED]}${symbol}${_c[RESET]}"
+	else
+		echo "$symbol"
+	fi
+}
+
 __prompt_cmd() {
 	local return=$?
-	[ $return -ne 0 ] && _symbol="${_c[RED]}>${_c[RESET]}" || _symbol=">"
-
-	_jobs=$(__get_jobs)
-	[ "$_jobs" ] && _jobs="${_c[BOLD]}${_c[GRAY]}[$(__get_jobs)]${_c[RESET]} "
-
-	[ "$_has_git_prompt" -eq 1 ] && _git_prompt="$(__git_prompt_cmd)"
+	_symbol="$(__symbol_prompt "$return")"
+	_git_prompt="$(__git_branch_prompt)"
+	_jobs="$(__jobs_prompt)"
 }
 
 PROMPT_COMMAND=__prompt_cmd
@@ -246,26 +249,28 @@ set_histfile
 unset -f set_histfile
 
 ## functions
-if __is_installed grim slurp magick; then
-	pico() {
-		local px rgb hex fmt out
-
-		px="$(slurp -p)" || return 1
-		rgb="rgb(%[fx:int(255*r)],%[fx:int(255*g)],%[fx:int(255*b)])"
-		hex="#%[hex:p]"
-
-		fmt="$rgb\n$hex\n"
-		out="$(grim -g "$px" -t ppm - | magick - -format "$fmt" info:)"
-		echo "$out"
-	}
-fi
-
-ll() {
-	command ls -Ahlv --color=always --group-directories-first --time-style=long-iso "$@" | $PAGER
+__is_installed tree && tree() {
+	command tree -C "$@" | "$PAGER"
 }
 
-tree() {
-	command tree -C "$@" | $PAGER
+__is_installed lstr && lstr() {
+	command lstr -G --icons --color=always "$@" | "$PAGER"
+}
+
+ll() {
+	command ls -Ahlv --color=always --group-directories-first --time-style=long-iso "$@" | "$PAGER"
+}
+
+__is_installed grim slurp magick && pico() {
+	local px rgb hex fmt out
+
+	px="$(slurp -p)" || return 1
+	rgb="rgb(%[fx:int(255*r)],%[fx:int(255*g)],%[fx:int(255*b)])"
+	hex="#%[hex:p]"
+
+	fmt="$rgb\n$hex\n"
+	out="$(grim -g "$px" -t ppm - | magick - -format "$fmt" info:)"
+	echo "$out"
 }
 
 rungui() {
@@ -283,4 +288,4 @@ alias mv="mv -iv"
 alias rm="rm -Iv"
 alias ..="cd .."
 alias ls="ls -Fv --color=auto"
-alias wget='wget --hsts-file="$XDG_CACHE_HOME/wget-hsts"'
+__is_installed wget && alias wget='wget --hsts-file="$XDG_CACHE_HOME/wget-hsts"'
