@@ -22,6 +22,7 @@ require("config.plugins.treesitter")
 
 require("config.plugins.surround")
 require("config.plugins.pairs")
+require("config.plugins.completion")
 require("config.plugins.undotree")
 require("config.plugins.git")
 require("config.plugins.picker")

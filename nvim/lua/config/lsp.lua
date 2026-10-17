@@ -48,24 +48,24 @@ vim.api.nvim_create_autocmd("LspAttach", {
             end)
         end
 
-        if client:supports_method("textDocument/completion", buf) then
-            vim.schedule(function()
-                local chars = {}
-                for i = 32, 126 do
-                    table.insert(chars, string.char(i))
-                end
-                client.server_capabilities.completionProvider.triggerCharacters = chars
-
-                vim.bo[buf].complete = "o"
-
-                vim.lsp.completion.enable(true, client.id, buf, {
-                    autotrigger = true,
-                    convert = function(i)
-                        return { abbr = i.label:gsub("%b()", "") }
-                    end,
-                })
-            end)
-        end
+        -- if client:supports_method("textDocument/completion", buf) then
+        --     vim.schedule(function()
+        --         local chars = {}
+        --         for i = 32, 126 do
+        --             table.insert(chars, string.char(i))
+        --         end
+        --         client.server_capabilities.completionProvider.triggerCharacters = chars
+        --
+        --         vim.bo[buf].complete = "o"
+        --
+        --         vim.lsp.completion.enable(true, client.id, buf, {
+        --             autotrigger = true,
+        --             convert = function(i)
+        --                 return { abbr = i.label:gsub("%b()", "") }
+        --             end,
+        --         })
+        --     end)
+        -- end
 
         if client:supports_method("textDocument/onTypeFormatting", buf) then
             vim.schedule(function()

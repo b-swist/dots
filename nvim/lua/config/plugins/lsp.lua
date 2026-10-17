@@ -19,7 +19,7 @@ local optional_servers = {
     "nixd",
 }
 
-all_servers = require("utils").merge_lists(required_servers, optional_servers)
+local all_servers = require("utils").merge_lists(required_servers, optional_servers)
 
 vim.iter(ipairs(all_servers)):each(function(_, s)
     vim.lsp.enable(s)
