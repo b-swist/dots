@@ -27,6 +27,8 @@ require("config.plugins.undotree")
 require("config.plugins.git")
 require("config.plugins.picker")
 
+require("config.plugins.colorscheme")
+
 vim.api.nvim_create_user_command("PackUpdate", function()
     vim.pack.update()
 end, {})

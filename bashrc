@@ -94,7 +94,7 @@ export WGETRC="${XDG_CONFIG_HOME}/wgetrc"
 [ ! -f "$WGETRC" ] && touch -- "$WGETRC"
 
 export LESS="-FiMqRWX -x4 -z3"
-export MOOR="--quit-if-one-screen --tab-size=4"
+export MOOR="--quit-if-one-screen --tab-size=4 --terminal-fg --style=gruvbox"
 
 export GH_TELEMETRY=
 export DO_NOT_TRACK=1
