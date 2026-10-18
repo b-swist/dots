@@ -197,11 +197,35 @@ __jobs_prompt() {
 __git_branch_prompt() {
 	local branch
 	branch="$(git branch --show-current 2>/dev/null)"
-	[ -z "$branch" ] && return
+	[ -n "$branch" ] && echo "$branch"
+}
 
-	local prompt=" on ${_c[GREEN]}($branch)${_c[RESET]}"
-	# [ "$action" ] && prompt+=" doing ${_c[YELLOW]}<$action>${_c[RESET]}"
+__git_marker_prompt() {
+	local upstream ahead behind dirty
+	upstream="$(git rev-parse --abbrev-ref '@{upstream}' 2>/dev/null)"
+	[ -z "$upstream" ] && return 1
 
+	read -r ahead behind <<<"$(git rev-list --left-right --count "HEAD...$upstream")"
+	if [ "$ahead" -gt 0 ]; then
+		echo '+'
+		return
+	fi
+
+	dirty="$(git status --porcelain)"
+	if [ -n "$dirty" ]; then
+		echo '*'
+		return
+	elif [ "$behind" -gt 0 ]; then
+		echo '-'
+	fi
+}
+
+__git_prompt() {
+	local prompt branch marker
+	branch="$(__git_branch_prompt)" || return
+	marker="$(__git_marker_prompt)"
+
+	prompt=" on ${_c[GREEN]}($branch$marker)${_c[RESET]}"
 	echo "$prompt"
 }
 
@@ -216,10 +240,11 @@ __symbol_prompt() {
 	fi
 }
 
+_git_prompt=
 __prompt_cmd() {
 	local return=$?
 	_symbol="$(__symbol_prompt "$return")"
-	_git_prompt="$(__git_branch_prompt)"
+	__is_installed git && _git_prompt="$(__git_prompt)"
 	_jobs="$(__jobs_prompt)"
 }
 
