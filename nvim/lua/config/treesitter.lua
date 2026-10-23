@@ -17,12 +17,7 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 vim.api.nvim_create_user_command("TSStart", function(opts)
-    local buf = vim.api.nvim_get_current_buf()
-    if opts.count >= 1 then
-        vim.treesitter.start(buf, opts.args)
-    else
-        vim.treesitter.start(buf)
-    end
+    vim.treesitter.start(0, opts.args)
 end, {
     nargs = "?",
     desc = "Start treesitter for current buffer",

@@ -11,6 +11,9 @@ _G.gl = make_url("gitlab.com")
 _G.cb = make_url("codeberg.org")
 
 require("plugins.icons")
+require("plugins.colorscheme")
+
+require("plugins.treesitter")
 require("plugins.oil")
 
 require("plugins.lsp")
@@ -18,16 +21,14 @@ require("plugins.format")
 require("plugins.lint")
 require("plugins.mason")
 
-require("plugins.treesitter")
-
 require("plugins.surround")
 require("plugins.pairs")
+require("plugins.notify")
 require("plugins.completion")
+require("plugins.diagnostic")
 require("plugins.undotree")
 require("plugins.git")
 require("plugins.picker")
-
-require("plugins.colorscheme")
 
 vim.api.nvim_create_user_command("PackUpdate", function()
     vim.pack.update()

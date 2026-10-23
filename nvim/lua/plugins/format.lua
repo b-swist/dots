@@ -2,15 +2,6 @@ vim.pack.add({ gh("stevearc/conform.nvim") })
 
 local conform = require("conform")
 
-local formatters = {
-    "stylua",
-    "black",
-    "prettier",
-    "shfmt",
-    "clang-format",
-    "alejandra",
-}
-
 conform.setup({
     formatters_by_ft = {
         lua = { "stylua" },
@@ -79,5 +70,3 @@ vim.api.nvim_create_user_command("ConformEnable", function()
     vim.b.disable_autoformat = false
     vim.g.disable_autoformat = false
 end, {})
-
-return { formatters = formatters }

@@ -9,13 +9,13 @@ vim.api.nvim_create_autocmd("TextYankPost", {
     end,
 })
 
-vim.api.nvim_create_autocmd("CmdlineChanged", {
-    group = vim.api.nvim_create_augroup("CmdlineWildtrigger", { clear = true }),
-    pattern = "[:/?]",
-    callback = function()
-        vim.fn.wildtrigger()
-    end,
-})
+-- vim.api.nvim_create_autocmd("CmdlineChanged", {
+--     group = vim.api.nvim_create_augroup("CmdlineWildtrigger", { clear = true }),
+--     pattern = "[:/?]",
+--     callback = function()
+--         vim.fn.wildtrigger()
+--     end,
+-- })
 
 vim.api.nvim_create_autocmd("TermOpen", {
     callback = function()

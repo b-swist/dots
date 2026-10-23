@@ -3,7 +3,7 @@ vim.g.maplocalleader = "\\"
 
 vim.keymap.set("n", "x", '"_x')
 vim.keymap.set("x", "p", '"_dP')
-vim.keymap.set("t", "<Esc>", "<C-\\><C-n>")
+vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>")
 vim.keymap.set("n", "<Esc>", vim.cmd.nohlsearch)
 
 vim.iter(pairs({
@@ -32,6 +32,16 @@ vim.keymap.set("n", "<leader>i", vim.show_pos)
 vim.keymap.set("n", "<leader>I", vim.treesitter.inspect_tree)
 
 vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist)
+
+vim.iter(pairs({
+    r = "]",
+    v = ">",
+    q = '"',
+    Q = "'",
+})):each(function(o, c)
+    vim.keymap.set({ "o", "x" }, "a" .. o, "a" .. c)
+    vim.keymap.set({ "o", "x" }, "i" .. o, "i" .. c)
+end)
 
 vim.iter(ipairs({
     "<Space>",

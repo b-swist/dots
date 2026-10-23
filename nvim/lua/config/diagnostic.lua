@@ -14,7 +14,7 @@ vim.diagnostic.config({
     virtual_text = {
         spacing = 2,
         source = "if_many",
-        prefix = vim.g.nerd_font and "",
+        prefix = "",
     },
 
     jump = {

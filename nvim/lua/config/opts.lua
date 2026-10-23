@@ -1,5 +1,3 @@
-vim.g.nerd_font = true
-
 vim.o.mouse = "a"
 vim.o.confirm = true
 vim.o.undofile = true

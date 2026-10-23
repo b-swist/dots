@@ -1,14 +1,27 @@
-vim.api.nvim_create_autocmd("InsertEnter", {
-    once = true,
-    callback = function()
-        vim.pack.add({ gh("saghen/blink.lib"), gh("saghen/blink.cmp") })
+vim.pack.add({ gh("saghen/blink.lib"), gh("saghen/blink.cmp") })
 
-        local blink = require("blink.cmp")
-        blink.build():pwait()
-        blink.setup({
-            completion = {
-                documentation = { auto_show = true },
+local blink = require("blink.cmp")
+
+local setup = function()
+    blink.setup({
+        appearance = {
+            nerd_font_variant = "normal",
+        },
+        cmdline = {
+            keymap = {
+                preset = "inherit",
             },
-        })
-    end,
-})
+            completion = {
+                menu = {
+                    auto_show = function()
+                        return vim.fn.getcmdtype() == ":"
+                    end,
+                },
+            },
+        },
+    })
+end
+
+blink.build():map(setup):catch(function(err)
+    vim.notify("blink.cmp build failed: " .. tostring(err), vim.log.levels.ERROR)
+end)

@@ -1,0 +1,14 @@
+{
+  "header guard": {
+    "prefix": "#guard",
+    "body": [
+      "#ifndef ${1:FILE}_H",
+      "#define $1_H",
+      "",
+      "$0",
+      "",
+      "#endif // $1_H"
+    ],
+    "description": "Header include guard"
+  }
+}
