@@ -6,4 +6,6 @@ end
 vim.loader.enable()
 require("vim._core.ui2").enable()
 
+require("filetypes")
 require("config")
+require("plugins")
